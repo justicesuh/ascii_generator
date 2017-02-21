@@ -1,6 +1,12 @@
+#!/usr/bin/python
+
 from __future__ import print_function
 
 from PIL import Image
+
+__author__ = 'Justice Suh'
+__email__ = 'jts119@georgetown.edu'
+__license__ = 'MIT'
 
 if __name__ == '__main__':
     start_width = 76 # this skips the low nibble header and the two control columns
@@ -27,26 +33,27 @@ if __name__ == '__main__':
 
         # .graphic files are 7x9, but noritake itron are 5x7
         # pad the font with white border
-        graphic.write('x{}row{}:\t.FILL x7fff\n'.format(code, 0))
+        graphic.write('x{}row{}: .FILL x7fff\n'.format(code, 0))
         for col in range(6):
-            graphic.write('\t\t.FILL x7fff\n')
+            graphic.write('.FILL x7fff\n')
         graphic.write('\n')
 
         for row in range(7):
-            graphic.write('x{}row{}:\t.FILL x7fff\n'.format(code, row + 1))
+            graphic.write('x{}row{}: .FILL x7fff\n'.format(code, row + 1))
             for col in range(5):
                 x = col * 3 + 1
                 y = row * 3 + 1
                 # noritake itron "pixels" are 2x2
                 if pixel_tile[x - 1, y - 1] == BLACK and pixel_tile[x, y - 1] == BLACK and pixel_tile[x - 1, y] == BLACK and pixel_tile[x, y] == BLACK:
-                    graphic.write('\t\t.FILL x7c00\n')
+                    graphic.write('.FILL x7c00\n')
                 else:
-                    graphic.write('\t\t.FILL x7fff\n')
-            graphic.write('\t\t.FILL x7fff\n\n')
+                    graphic.write('.FILL x7fff\n')
+            graphic.write('.FILL x7fff\n\n')
 
         # ditto here 
-        graphic.write('x{}row{}:\t.FILL x7fff\n'.format(code, 8))
+        graphic.write('x{}row{}: .FILL x7fff\n'.format(code, 8))
         for col in range(6):
-            graphic.write('\t\t.FILL x7fff\n')
+            graphic.write('.FILL x7fff\n')
+        graphic.write('\n')
 
         graphic.close()
