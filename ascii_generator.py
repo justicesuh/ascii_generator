@@ -17,20 +17,36 @@ if __name__ == '__main__':
             tile = ascii_table.convert('RGB').crop((width + 5, height + 2, width + tile_size - 5, height + tile_size - 2))
             tiles.append(tile)
 
-    # convert from noritake itron format to 5x7 format
+    # convert from noritake itron format to .graphic file
     ascii_offset = 32
     BLACK = (0, 0, 0)
     for i in range(len(tiles)):
-        dot_matrix = Image.new('RGB', (7, 9), (255, 255, 255))
-        pixel_dot_matrix = dot_matrix.load()
         pixel_tile = tiles[i].load()
-        print(ascii_offset + i)
-        for col in range(5):
-            for row in range(7):
+        code = hex(ascii_offset + i)[2:]
+        graphic = open('x{}.graphic'.format(code), 'w+')
+
+        # .graphic files are 7x9, but noritake itron are 5x7
+        # pad the font with white border
+        graphic.write('x{}row{}:\t.FILL x7fff\n'.format(code, 0))
+        for col in range(6):
+            graphic.write('\t\t.FILL x7fff\n')
+        graphic.write('\n')
+
+        for row in range(7):
+            graphic.write('x{}row{}:\t.FILL x7fff\n'.format(code, row + 1))
+            for col in range(5):
                 x = col * 3 + 1
                 y = row * 3 + 1
                 if pixel_tile[x - 1, y - 1] == BLACK and pixel_tile[x, y - 1] == BLACK and pixel_tile[x - 1, y] == BLACK and pixel_tile[x, y] == BLACK:
-                    pixel_dot_matrix[col + 1, row + 1] = BLACK
-                    print(ascii_offset + i, col + 1, row + 1)
-        tiles[i] = dot_matrix
-        tiles[i].save('ascii{}.jpg'.format(i + ascii_offset))
+                    graphic.write('\t\t.FILL x7c00\n')
+                else:
+                    graphic.write('\t\t.FILL x7fff\n')
+            graphic.write('\t\t.FILL x7fff\n\n')
+
+        # ditto here 
+        graphic.write('x{}row{}:\t.FILL x7fff\n'.format(code, 8))
+        for col in range(6):
+            graphic.write('\t\t.FILL x7fff\n')
+        graphic.write('\n')
+
+        graphic.close()
