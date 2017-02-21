@@ -18,4 +18,4 @@ python ascii_generator.py
 
 ## License
 
-Licensed under [MIT](https://tldrlegal.com/license/mit-license)
+Code is licensed under [MIT](https://tldrlegal.com/license/mit-license)
